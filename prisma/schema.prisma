@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Example {
+  id String @id @default(cuid())
+}
+
+model Room {
+  id       String   @id @default(cuid())
+  question String
+  answers  Answer[]
+  members  Member[]
+}
+
+model Member {
+  id      String   @id @default(cuid())
+  isHost  Boolean 
+  name    String
+  roomId  String
+  room    Room     @relation(fields: [roomId], references: [id])
+  answers Answer[]
+}
+
+model Answer {
+  id         String @id @default(cuid())
+  text       String
+  questionId String
+  memberId   String
+  roomId     String
+  room       Room   @relation(fields: [roomId], references: [id])
+  member     Member @relation(fields: [memberId], references: [id])
+}
